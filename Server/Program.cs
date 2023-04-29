@@ -8,14 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddHttpsRedirection(options =>
+    {
+        options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+        options.HttpsPort = 443;
+    });
+
 builder.Services.AddCors(o => o.AddPolicy("default", builder =>
-            {
-                builder.WithOrigins("http://localhost:4200")
-                       .SetIsOriginAllowedToAllowWildcardSubdomains()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader()
-                       .AllowCredentials();
-            }));
+{
+    builder.WithOrigins("https://192.168.2.107:7997")
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials();
+}));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -60,6 +65,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseHttpsRedirection();
 
 app.UseCors("default");
 
@@ -81,4 +87,5 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<SignalingHub>("/hubs/signaling");
 });
 
-app.Run();
+app.Run();      
+      

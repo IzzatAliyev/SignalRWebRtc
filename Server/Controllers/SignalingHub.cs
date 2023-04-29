@@ -10,6 +10,7 @@ namespace Server.Controllers
 
         public async Task SendMessage(object message, string roomName)
         {
+            System.Console.WriteLine("SignalingHub.SendMessage");
             await EmitLog("Client " + Context.ConnectionId + " said: " + message, roomName);
 
             await Clients.OthersInGroup(roomName).SendAsync("message", message);
@@ -17,6 +18,7 @@ namespace Server.Controllers
 
         public async Task CreateOrJoinRoom(string roomName)
         {
+            System.Console.WriteLine("SignalingHub.CreateOrJoinRoom");
             await EmitLog("Received request to create or join room " + roomName + " from a client " + Context.ConnectionId, roomName);
 
             if (!ConnectedClients.ContainsKey(roomName))
@@ -49,6 +51,7 @@ namespace Server.Controllers
 
         public async Task LeaveRoom(string roomName)
         {
+            System.Console.WriteLine("SignalingHub.LeaveRoom");
             await EmitLog("Received request to leave the room " + roomName + " from a client " + Context.ConnectionId, roomName);
 
             if (ConnectedClients.ContainsKey(roomName) && ConnectedClients[roomName].Contains(Context.ConnectionId))
@@ -68,21 +71,25 @@ namespace Server.Controllers
 
         private async Task EmitJoinRoom(string roomName)
         {
+            System.Console.WriteLine("SignalingHub.EmitJoinRoom");
             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
         }
 
         private async Task EmitCreated()
         {
+            System.Console.WriteLine("SignalingHub.EmitCreated");
             await Clients.Caller.SendAsync("created");
         }
 
         private async Task EmitJoined(string roomName)
         {
+            System.Console.WriteLine("SignalingHub.EmitJoined");
             await Clients.Group(roomName).SendAsync("joined");
         }
 
         private async Task EmitLog(string message, string roomName)
         {
+            System.Console.WriteLine("SignalingHub.EmitLog");
             await Clients.Group(roomName).SendAsync("log", "[Server]: " + message);
         }
     }

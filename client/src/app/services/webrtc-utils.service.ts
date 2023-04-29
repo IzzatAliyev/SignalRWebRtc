@@ -22,12 +22,14 @@ export class WebrtcUtils {
     peerIdentity: string,
     certificates: RTCCertificate[],
     iceCandidatePoolSize: number): RTCPeerConnection {
+    console.log("WebrtcUtils.createPeerConnection");
     return new RTCPeerConnection({
       iceServers, sdpSemantics, bundlePolicy, iceTransportPolicy, rtcpMuxPolicy, peerIdentity, certificates, iceCandidatePoolSize
     } as RTCConfiguration);
   }
 
   public static doIceRestart(peerConnection: RTCPeerConnection | any, messageSender: MessageSender): void {
+    console.log("WebrtcUtils.doIceRestart");
     console.log('doIceRestart');
     try {
       // try using new restartIce method
@@ -47,6 +49,7 @@ export class WebrtcUtils {
   // WebRTC stats reports
 
   public static logStats(peerConnection: RTCPeerConnection, type: 'inbound' | 'outbound' | 'all'): void {
+    console.log("WebrtcUtils.logStats");
     peerConnection.getStats().then(stat => {
       stat.forEach(report => {
         switch (type) {
@@ -70,6 +73,7 @@ export class WebrtcUtils {
     // WebRTC bitrate manipulation
 
     public static changeBitrate(sdp: RTCSessionDescriptionInit, start: string, min: string, max: string): any | RTCSessionDescriptionInit {
+      console.log("WebrtcUtils.changeBitrate");
       // @ts-ignore
       const sdpLines = sdp.sdp.split('\r\n');
       sdpLines.forEach((str, i) => {
@@ -93,11 +97,13 @@ export class WebrtcUtils {
   // WebRTC codecs manipulation
 
   public static getCodecs(type: 'audio' | 'video'): string[] {
+    console.log("WebrtcUtils.getCodecs");
     // @ts-ignore
     return RTCRtpSender.getCapabilities(type).codecs.map(c => c.mimeType).filter((value, index, self) => self.indexOf(value) === index);
   }
 
   public static setCodecs(sdp: RTCSessionDescriptionInit, type: 'audio' | 'video', codecMimeType: string): RTCSessionDescriptionInit {
+    console.log("WebrtcUtils.setCodecs");
     // @ts-ignore
     const sdpLines = sdp.sdp.split('\r\n');
     sdpLines.forEach((str, i) => {
@@ -138,6 +144,7 @@ export class WebrtcUtils {
   }
 
   private static getPayloads(sdp: string, codec: string): string[] {
+    console.log("WebrtcUtils.getPayloads");
     // @ts-ignore
     const payloads = [];
     const sdpLines = sdp.split('\r\n');

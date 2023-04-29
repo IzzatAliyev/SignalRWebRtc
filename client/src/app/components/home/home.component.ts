@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log("HomeComponent.ngOnInit");
     this.signaling.connect('/auth', false).then(() => {
       if (this.signaling.isConnected()) {
         this.signaling.invoke('Authorize').then((token: string) => {
@@ -30,6 +31,7 @@ export class HomeComponent implements OnInit {
   }
 
   startSessionCall(): void {
+    console.log("HomeComponent.startSessionCall");
     this.router.navigate(['session-call/' + this.room]);
   }
 }

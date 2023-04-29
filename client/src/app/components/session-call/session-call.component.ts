@@ -29,7 +29,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   room: string;
   // @ts-ignore
   peerConnection: RTCPeerConnection;
-  // @ts-ignore 
+  // @ts-ignore
   isInitiator: boolean;
   // @ts-ignore
   isChannelReady: boolean;
@@ -48,10 +48,12 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   ngOnInit(): void {
+    console.log("SessionCallComponent.ngOnInit");
     this.start();
   }
 
   start(): void {
+    console.log("SessionCallComponent.start");
     // #1 connect to signaling server
     this.signaling.connect('/signaling', true).then(() => {
       if (this.signaling.isConnected()) {
@@ -67,6 +69,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   defineSignaling(): void {
+    console.log("SessionCallComponent.defineSignaling");
     this.signaling.define('log', (message: any) => {
       console.log(message);
     });
@@ -103,23 +106,25 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   getUserMedia(): void {
-    navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true
+    console.log("SessionCallComponent.getUserMedia");
+      navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true
     })
-    .then((stream: MediaStream) => {
-      this.addLocalStream(stream);
-      this.sendMessage('got user media');
-      if (this.isInitiator) {
-        this.initiateCall();
-      }
-    })
-    .catch((e) => {
-      alert('getUserMedia() error: ' + e.name + ': ' + e.message);
-    });
+        .then((stream: MediaStream) => {
+          this.addLocalStream(stream);
+          this.sendMessage('got user media');
+          if (this.isInitiator) {
+            this.initiateCall();
+          }
+        })
+        .catch((e) => {
+          alert('getUserMedia() error: ' + e.name + ': ' + e.message);
+        });
   }
 
   initiateCall(): void {
+    console.log("SessionCallComponent.initiateCall");
     console.log('Initiating a call.');
     if (!this.isStarted && this.localStream && this.isChannelReady) {
       this.createPeerConnection();
@@ -135,6 +140,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   createPeerConnection(): void {
+    console.log("SessionCallComponent.createPeerConnection");
     console.log('Creating peer connection.');
     try {
       if (useWebrtcUtils) {
@@ -178,6 +184,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   sendOffer(): void {
+    console.log("SessionCallComponent.sendOffer");
     console.log('Sending offer to peer.');
     this.addTransceivers();
     this.peerConnection.createOffer()
@@ -198,6 +205,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   sendAnswer(): void {
+    console.log("SessionCallComponent.sendAnswer");
     console.log('Sending answer to peer.');
     this.addTransceivers();
     // @ts-ignore
@@ -208,6 +216,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   addIceCandidate(message: any): void {
+    console.log("SessionCallComponent.addIceCandidate");
     console.log('Adding ice candidate.');
     const candidate = new RTCIceCandidate({
       sdpMLineIndex: message.label,
@@ -217,6 +226,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   sendIceCandidate(event: RTCPeerConnectionIceEvent): void {
+    console.log("SessionCallComponent.sendIceCandidate");
     console.log('Sending ice candidate to remote peer.');
     this.sendMessage({
       type: 'candidate',
@@ -231,10 +241,12 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
 
   // @ts-ignore
   sendMessage(message): void {
+    console.log("SessionCallComponent.sendMessage");
     this.signaling.invoke('SendMessage', message, this.room);
   }
 
   addTransceivers(): void {
+    console.log("SessionCallComponent.addTransceivers");
     console.log('Adding transceivers.');
     const init = { direction: 'recvonly', streams: [], sendEncodings: [] } as RTCRtpTransceiverInit;
     this.peerConnection.addTransceiver('audio', init);
@@ -242,13 +254,15 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   addLocalStream(stream: MediaStream): void {
+    console.log("SessionCallComponent.addLocalStream");
     console.log('Local stream added.');
     this.localStream = stream;
-    this.localVideo.nativeElement.srcObject = this.localStream;
+    this.localVideo.nativeElement.srcObject = stream;
     this.localVideo.nativeElement.muted = 'muted';
   }
 
   addRemoteStream(stream: MediaStream): void {
+    console.log("SessionCallComponent.addRemoteStream");
     console.log('Remote stream added.');
     this.remoteStream = stream;
     this.remoteVideo.nativeElement.srcObject = this.remoteStream;
@@ -256,6 +270,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   hangup(): void {
+    console.log("SessionCallComponent.hangup");
     console.log('Hanging up.');
     this.stopPeerConnection();
     this.sendMessage('bye');
@@ -266,6 +281,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   handleRemoteHangup(): void {
+    console.log("SessionCallComponent.handleRemoteHangup");
     console.log('Session terminated by remote peer.');
     this.stopPeerConnection();
     this.isInitiator = true;
@@ -273,6 +289,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   stopPeerConnection(): void {
+    console.log("SessionCallComponent.stopPeerConnection");
     this.isStarted = false;
     this.isChannelReady = false;
     if (this.peerConnection) {
@@ -283,6 +300,7 @@ export class SessionCallComponent implements OnInit, OnDestroy, MessageSender {
   }
 
   ngOnDestroy(): void {
+    console.log("SessionCallComponent.ngOnDestroy");
     this.hangup();
     if (this.localStream && this.localStream.active) {
       this.localStream.getTracks().forEach((track) => { track.stop(); });

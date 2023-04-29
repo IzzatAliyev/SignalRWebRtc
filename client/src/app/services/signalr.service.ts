@@ -14,6 +14,7 @@ export class SignalrService {
   constructor() { }
 
   async connect(path: string, withToken: boolean): Promise<void> {
+    console.log("SignalrService.connect");
     const url = this.baseUrl + path;
 
     const builder = new HubConnectionBuilder();
@@ -40,12 +41,14 @@ export class SignalrService {
   }
 
   async define(methodName: string, newMethod: (...args: any[]) => void): Promise<void> {
+    console.log("SignalrService.define");
     if (this.hubConnection) {
       this.hubConnection.on(methodName, newMethod);
     }
   }
 
   async invoke(methodName: string, ...args: any[]): Promise<any> {
+    console.log("SignalrService.invoke");
     if (this.isConnected()) {
       // @ts-ignore
       return this.hubConnection.invoke(methodName, ...args);
@@ -53,6 +56,7 @@ export class SignalrService {
   }
 
   disconnect(): void {
+    console.log("SignalrService.disconnect");
     if (this.isConnected()) {
       // @ts-ignore
       this.hubConnection.stop();
@@ -60,6 +64,7 @@ export class SignalrService {
   }
 
   isConnected(): boolean {
+    console.log("SignalrService.isConnected");
     // @ts-ignore
     return this.hubConnection && this.hubConnection.state === HubConnectionState.Connected;
   }

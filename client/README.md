@@ -5,6 +5,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+for running and using on the same network use this `ng serve --host 0.0.0.0 --port 7997`
+for running https and using on the same network use this `ng serve --ssl true --ssl-key key.pem --ssl-cert cert.pem --host 192.168.2.107 --port 7997`
 
 ## Code scaffolding
 

@@ -10,6 +10,7 @@ namespace Server
 
         public static string GenerateToken()
         {
+            System.Console.WriteLine("TokenHelper.GenerateToken");
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(SECRET);
             var tokenDescriptor = new SecurityTokenDescriptor
